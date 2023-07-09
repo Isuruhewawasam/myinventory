@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+
+{% block title %} Repairing List {% endblock title %}
+
+
+{% block content %}
+    
+    <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
+        <div class="col-md-8">Repairing List</div>
+        <div class="col-md-4">            <!-- Log on to codeastro.com for more projects -->   
+            <div style="float:right;"> <a class="btn btn-success" href="{% url 'select-supplier' %}">New Incoming Stock</a> </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="mb-5 d-flex align-items-end justify-content-center flex-column gap-4">
+        <form class="d-flex">
+            
+          <input name="q" class="form-control me-1" type="search" placeholder="Search" aria-label="Search"  >
+          <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+    </div>
+    
+
+    
+    <table class="table table-css table-bordered table-hover">
+        
+
+        
+
+        <thead class="thead-dark align-middle">
+            <tr>
+                <th width="5%">Bill No.</th>
+                <th width="15%">Phone number</th>
+                <th width="15%">Name</th>
+                <th width="10%">Repairing Chargers</th>
+                <th width="15%">Address</th>
+                <th width="10%">Purchased Date</th>
+                <th width="15%">Status</th>
+                <th width="15%">Actions</th>
+            </tr>
+        </thead>
+
+{% if repair %}
+
+        <tbody>         
+            {% for purchase in repair %}
+            <tr>
+                <td class="align-middle"> <p>{{ purchase.billno }}</p> </td>
+                <td class="align-middle"> 
+                  
+                    <small >Ph No : {{ purchase.phone }}</small> 
+                </td><!-- Log on to codeastro.com for more projects -->
+                
+                <td class="align-middle">{{ purchase.name }}</td>
+                {% if purchase.charges == None %}
+                <td class="align-middle"><small style="color: red;">Not Paid</small></td>    
+                {% else %}
+                <td class="align-middle">{{ purchase.charges }}</td>
+                {% endif %}
+                
+                <td class="align-middle">{{ purchase.address }}</td>
+                <td class="align-middle">{{ purchase.time.date }}</td>
+                {% if purchase.status == "Pending" %}
+                <td class="align-middle"><small style="color: red;">{{ purchase.status }}</small></td>
+                {% else %}
+                <td class="align-middle" style = "color:green;">{{ purchase.status }}</td>
+                {% endif %}
+                
+                <td class="align-middle"> <a href="{% url 'r-detail' purchase.billno %}" class="btn btn-secondary btn-sm">View Bill</a> <a href="{% url 'delete-repair' purchase.billno %}" class="btn btn-danger btn-sm">Delete Bill</a> </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+    <div class="align-middle">
+        {% if is_paginated %}
+
+            {% if repair.has_previous %}
+                <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{ repair.previous_page_number }}">Previous</a>
+            {% endif %}
+
+            {% for num in repair.paginator.page_range %}
+                {% if repair.number == num %}
+                    <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% elif num > repair.number|add:'-3' and num < repair.number|add:'3' %}
+                    <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if repair.has_next %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ repair.next_page_number }}">Next</a>
+                <a class="btn btn-outline-info mb-4" href="?page={{ repair.paginator.num_pages }}">Last</a>
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+{% else %}
+
+        <tbody></tbody>  <!-- Log on to codeastro.com for more projects --> 
+    </table>
+
+    <br><br><br><br><br><br><br><br>
+    <div style="color: #575757; font-style: bold; font-size: 1.5rem; text-align: center;">The records are empty. Please try adding some.</div>
+<!-- Log on to codeastro.com for more projects -->
+{% endif %}  
+   
+
+
+{% endblock content %}
